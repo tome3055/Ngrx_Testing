@@ -115,7 +115,7 @@ describe('SubmitEffect', () => {
     store.select(modelSelector).subscribe((value) => {
       stateaftersuccess = value;
     });
-
+    
     expect(stateaftersuccess!).toEqual(afterFormSubmitState);
   });
 });
