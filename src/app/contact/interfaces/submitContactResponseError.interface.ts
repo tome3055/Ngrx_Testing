@@ -1,0 +1,1 @@
+export interface SubmitContactResponseError {success: boolean, data: string }
