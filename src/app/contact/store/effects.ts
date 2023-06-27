@@ -1,5 +1,5 @@
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { submitContactAction, submitContactActionFailure, submitContactActionSuccess } from "./actions";
+import { changeContactAction, submitContactAction, submitContactActionFailure, submitContactActionSuccess } from "./actions";
 import { catchError, map, of, switchMap } from "rxjs";
 import { FakeApiService } from "../services/fakeapi.service";
 import { Injectable } from "@angular/core";
@@ -11,6 +11,21 @@ export class SubmitEffect {
   submit$ = createEffect(() =>
     this.actions$.pipe(
     ofType(submitContactAction),
+    switchMap((request) => {
+      //console.log('Effect triggered', request);
+      return this.fakeApiService.submitData(request.request, true).pipe(
+        map((response: SubmitContactResponseSuccess ) => {
+         return submitContactActionSuccess({ response });
+        }),
+        catchError((error: SubmitContactResponseError) => of(submitContactActionFailure({ response: error })))
+      )
+    })
+    )
+  );
+
+  change$ = createEffect(() =>
+    this.actions$.pipe(
+    ofType(changeContactAction),
     switchMap((request) => {
       //console.log('Effect triggered', request);
       return this.fakeApiService.submitData(request.request, true).pipe(

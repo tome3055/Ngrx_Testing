@@ -1,6 +1,6 @@
 import { Action, createReducer, on } from "@ngrx/store";
 
-import { submitContactAction, submitContactActionFailure, submitContactActionSuccess } from "./actions";
+import { changeContactAction, changeContactActionFailure, changeContactActionSuccess, submitContactAction, submitContactActionFailure, submitContactActionSuccess } from "./actions";
 import { ContactPagePresentationModel } from "../interfaces/contactpage.model.interface";
 import { initialState } from "../model.mock";
 
@@ -25,8 +25,34 @@ import { initialState } from "../model.mock";
       })),
     );
 
+    const changeReducer = createReducer(
+    initialState,
+    on(changeContactAction,
+    (state): ContactPagePresentationModel => ({
+    ...state,
+    isSubmitting: true
+    })),
+    on(changeContactActionSuccess,
+      (state, action): ContactPagePresentationModel => ({
+      ...state,
+      isSubmitting: false,
+      contacts: [...state.contacts, ...action.response.data],
+      })),
+    on(changeContactActionFailure,
+      (state, action): ContactPagePresentationModel => ({
+      ...state,
+      isSubmitting: false,
+      errors: action.response.data,
+      })),
+    );
+
 export function reducers(state: ContactPagePresentationModel, action: Action)
 {
   //console.log(state, action);
   return submitReducer(state, action);
+}
+
+export function changereducers(state: ContactPagePresentationModel, action: Action)
+{
+  return changeReducer(state, action);
 }

@@ -16,3 +16,16 @@ export const submitContactActionFailure = createAction(
   ActionTypes.SUBMIT_FAILURE,
   props<{ response: SubmitContactResponseSuccess | SubmitContactResponseError }>()
 );
+
+export const changeContactAction = createAction(
+  ActionTypes.CHANGE,
+  props<{ request: SubmitContactRequest }>()
+  );
+export const changeContactActionSuccess = createAction(
+  ActionTypes.CHANGE_SUCCESS,
+  props<{ response: SubmitContactResponseSuccess | SubmitContactResponseError }>()
+);
+export const changeContactActionFailure = createAction(
+  ActionTypes.CHANGE_FAILURE,
+  props<{ response: SubmitContactResponseSuccess | SubmitContactResponseError }>()
+);
