@@ -4,9 +4,8 @@ import { State } from '../interfaces/contactpage.model.interface';
 import { initialState } from '../model.mock';
 import {
   contactNameChanged,
-  submitContactAction,
-  submitContactActionFailure,
-  submitContactActionSuccess,
+  submitForm,
+  submitFormSuccess,
 } from './actions';
 
 export type AppState = {
@@ -20,31 +19,44 @@ const reducers = [
       ...state,
       form: {
         ...state.form,
-        name: action.name,
+          name: action.name,
       },
+      
     })
   ),
   on(
-    submitContactAction,
-    (state: State): State => ({
+    submitForm,
+    (state: State, action): State => ({
       ...state,
       isSubmitting: true,
+      form: {
+        ...state.form,
+          name: action.form.name,
+          email: action.form.email,
+          linkedinUrl: action.form.linkedinUrl,
+          snackbar: {
+            message: `Contact ${state.form.name} submitted`,
+          }
+      },
+      
     })
   ),
   on(
-    submitContactActionSuccess,
+    submitFormSuccess,
     (state: State, action): State => ({
       ...state,
-      isSubmitting: false,
-      contacts: [...state.contacts, ...action.response.data],
-    })
-  ),
-  on(
-    submitContactActionFailure,
-    (state: State, action): State => ({
-      ...state,
-      isSubmitting: false,
-      errors: action.response.data,
+      isSubmitting: true,
+      form: {
+        ...state.form,
+          name: "",
+          email: "",
+          linkedinUrl: "",
+          snackbar: {
+            message: `Contact ${state.form.name} created`,
+          }
+      },
+      contacts: [...state.contacts, ...action.contacts]
+      
     })
   ),
 ];

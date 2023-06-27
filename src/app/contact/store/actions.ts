@@ -3,6 +3,8 @@ import { SubmitContactResponseError } from '../interfaces/submitContactResponseE
 import { SubmitContactRequest } from '../interfaces/submitcontactrequest.interface';
 import { SubmitContactResponseSuccess } from '../interfaces/submitcontactresponse.interface';
 import { ActionTypes } from './actionTypes';
+import { ContactpagePresentationModel } from './selectors';
+import { ContactInterface } from '../interfaces/contact.interface';
 
 export const submitContactAction = createAction(
   ActionTypes.SUBMIT,
@@ -24,22 +26,14 @@ export const contactNameChanged = createAction(
   ActionTypes.CONTACT_MODIFIED,
   props<{
     name: string;
-  }>()
-);
-
-export const changeContactAction = createAction(
-  ActionTypes.CHANGE,
-  props<{ request: SubmitContactRequest }>()
-);
-export const changeContactActionSuccess = createAction(
-  ActionTypes.CHANGE_SUCCESS,
+  }>());
+export const submitForm = createAction(
+  ActionTypes.CONTACT_SUBMITED,
   props<{
-    response: SubmitContactResponseSuccess | SubmitContactResponseError;
-  }>()
-);
-export const changeContactActionFailure = createAction(
-  ActionTypes.CHANGE_FAILURE,
+    form: ContactpagePresentationModel;
+  }>());
+export const submitFormSuccess = createAction(
+  ActionTypes.CONTACT_SUBMITED_SUCCESS,
   props<{
-    response: SubmitContactResponseSuccess | SubmitContactResponseError;
-  }>()
-);
+    contacts: ContactInterface[];
+  }>());

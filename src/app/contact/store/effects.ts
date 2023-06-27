@@ -1,42 +1,25 @@
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { changeContactAction, submitContactAction, submitContactActionFailure, submitContactActionSuccess } from "./actions";
-import { catchError, map, of, switchMap } from "rxjs";
+import { submitForm, submitFormSuccess } from "./actions";
+import { map, switchMap } from "rxjs";
 import { FakeApiService } from "../services/fakeapi.service";
 import { Injectable } from "@angular/core";
-import { SubmitContactResponseSuccess } from "../interfaces/submitcontactresponse.interface";
-import { SubmitContactResponseError } from "../interfaces/submitContactResponseError.interface";
+import { ContactInterface } from "../interfaces/contact.interface";
 
 @Injectable()
 export class SubmitEffect {
   submit$ = createEffect(() =>
     this.actions$.pipe(
-    ofType(submitContactAction),
+    ofType(submitForm),
     switchMap((request) => {
-      //console.log('Effect triggered', request);
-      return this.fakeApiService.submitData(request.request, true).pipe(
-        map((response: SubmitContactResponseSuccess ) => {
-         return submitContactActionSuccess({ response });
-        }),
-        catchError((error: SubmitContactResponseError) => of(submitContactActionFailure({ response: error })))
-      )
-    })
-    )
-  );
-
-  change$ = createEffect(() =>
-    this.actions$.pipe(
-    ofType(changeContactAction),
-    switchMap((request) => {
-      //console.log('Effect triggered', request);
-      return this.fakeApiService.submitData(request.request, true).pipe(
-        map((response: SubmitContactResponseSuccess ) => {
-         return submitContactActionSuccess({ response });
-        }),
-        catchError((error: SubmitContactResponseError) => of(submitContactActionFailure({ response: error })))
+      return this.fakeApiService.submitData(request.form, true).pipe(
+        map((contacts: ContactInterface[] ) => submitFormSuccess({ contacts: contacts })),
+        //catchError((error: SubmitContactResponseError) => of(submitContactActionFailure({ response: error })))
       )
     })
     )
   );
   
-    constructor(private actions$: Actions, private fakeApiService: FakeApiService) {}
+    constructor(private actions$: Actions, private fakeApiService: FakeApiService) {
+      console.log(actions$);
+    }
   }

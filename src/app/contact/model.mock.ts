@@ -5,9 +5,12 @@ import { SubmitContactResponseSuccess } from './interfaces/submitcontactresponse
 
 export const initialState: State = {
   form: {
-    name: '',
-    linkedinUrl: '',
-    email: '',
+      name: '',
+      linkedinUrl: '',
+      email: '',
+    snackbar: {
+      message: ''
+    }
   },
   errors: '',
   isSubmitting: false,
@@ -16,9 +19,12 @@ export const initialState: State = {
 
 export const initialStateaftersubmit: State = {
   form: {
-    name: '',
-    linkedinUrl: '',
-    email: '',
+      name: '',
+      linkedinUrl: '',
+      email: '',
+    snackbar: {
+      message: ''
+    }
   },
   errors: '',
   isSubmitting: true,
@@ -27,9 +33,12 @@ export const initialStateaftersubmit: State = {
 
 export const formFilledState: State = {
   form: {
-    name: 'Bruno',
-    linkedinUrl: 'linkedin.com/bruno',
-    email: 'Bruno@ludotech.co',
+      name: 'Bruno',
+      linkedinUrl: 'linkedin.com/bruno',
+      email: 'Bruno@ludotech.co',
+    snackbar: {
+      message: ''
+    }
   },
   errors: '',
   isSubmitting: false,
@@ -38,9 +47,12 @@ export const formFilledState: State = {
 
 export const afterFormSubmitState: State = {
   form: {
-    name: '',
-    linkedinUrl: '',
-    email: '',
+      name: '',
+      linkedinUrl: '',
+      email: '',
+    snackbar: {
+      message: ''
+    }
   },
   errors: '',
   isSubmitting: false,

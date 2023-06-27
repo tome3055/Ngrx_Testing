@@ -4,18 +4,21 @@ import { Observable } from 'rxjs';
 import { State } from './interfaces/contactpage.model.interface';
 import { formFilledState, initialState } from './model.mock';
 import { FakeApiService } from './services/fakeapi.service';
-import { contactNameChanged } from './store/actions';
+import { contactNameChanged, submitForm } from './store/actions';
 import { SubmitEffect } from './store/effects';
 import { AppState, appReducerBuilder } from './store/reducers';
 import {
   ContactpagePresentationModel,
   selectContactPagePresentationModel,
+  selectContactsFromAppState,
 } from './store/selectors';
+import { ContactInterface } from './interfaces/contact.interface';
+import { EffectsModule } from '@ngrx/effects';
 
 const buildStore = (initialState: State) => {
   TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({ root: appReducerBuilder(initialState) })],
-    providers: [],
+    imports: [StoreModule.forRoot({ root: appReducerBuilder(initialState) }), EffectsModule.forRoot([SubmitEffect])],
+    providers: [FakeApiService],
   });
 
   return TestBed.inject(Store) as Store<AppState>;
@@ -24,30 +27,51 @@ const buildStore = (initialState: State) => {
 describe('SubmitEffect', () => {
   let store: Store<AppState>;
 
-  let actions$: Observable<Action>;
-  let effect: SubmitEffect;
-  let fakeApiService: FakeApiService;
-
-  beforeEach(() => {
-    store = buildStore(initialState);
-  });
+  // beforeEach(() => {
+  // });
 
   it('should write Risto into the name field when user is typing Risto', () => {
+    store = buildStore(initialState);
     let presentationModel: ContactpagePresentationModel;
     store.dispatch(contactNameChanged({ name: 'Risto' }));
 
     store.select(selectContactPagePresentationModel).subscribe((result) => {
+      //console.log(result)
       presentationModel = result.contactPage;
     });
-    expect(presentationModel!.form.name).toEqual('Risto');
+    expect(presentationModel!.name).toEqual('Risto');
   });
 
-  it('should show a successful message when the contact Risto is created', () => {
-    let presentationModel: ContactpagePresentationModel;
+  xit('should show a successful message when the contact Bruno is created', () => {
     store = buildStore(formFilledState);
-    store.dispatch(submitForm());
+    let presentationModel: ContactpagePresentationModel;
+    store.dispatch(submitForm({form: formFilledState.form}));
 
     store.select(selectContactPagePresentationModel).subscribe((result) => {
       presentationModel = result.contactPage;
     });
-    expect(presentationModel!.snackbar.message).toEqual('Contact Risto created');
+    expect(presentationModel!.snackbar.message).toEqual('Contact Bruno submitted');
+  });
+
+  it('should show a new contact in the contact list', () => {
+    store = buildStore(formFilledState);
+    let contactModel: ContactInterface;
+    let presentationModel: ContactpagePresentationModel;
+
+    store.dispatch(submitForm({form: formFilledState.form}));
+
+    store.select(selectContactPagePresentationModel).subscribe((result) => {
+      presentationModel = result.contactPage;
+    });
+
+    expect(presentationModel!.snackbar.message).toEqual('Contact Bruno submitted');
+
+    store.select(selectContactsFromAppState).subscribe((result) => {
+      contactModel = result.contacts;
+      console.log(result);
+    });
+
+
+    expect(contactModel!).toEqual({id: "123", name: "Bruno", email: "Bruno@ludotech.co", linkedinUrl: "linkedin.com/bruno"});
+  });
+});
