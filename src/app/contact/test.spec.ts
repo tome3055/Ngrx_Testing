@@ -1,58 +1,53 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { provideMockActions } from '@ngrx/effects/testing';
-import { Action, Store, StoreModule, select } from '@ngrx/store';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { Observable, first, of } from 'rxjs';
-import { SubmitEffect } from './store/effects';
+import { TestBed } from '@angular/core/testing';
+import { Action, Store, StoreModule } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { State } from './interfaces/contactpage.model.interface';
+import { formFilledState, initialState } from './model.mock';
 import { FakeApiService } from './services/fakeapi.service';
-import { submitContactAction, submitContactActionFailure, submitContactActionSuccess } from './store/actions';
-import { ContactPagePresentationModel } from './interfaces/contactpage.model.interface';
-import { reducers } from './store/reducers';
-import { afterFormSubmitState, initialState, initialStateaftersubmit, submitcontactrequest, submitcontactresponsesuccess } from './model.mock';
-import { mockModelSelector, modelSelector } from './store/selectors';
+import { contactNameChanged } from './store/actions';
+import { SubmitEffect } from './store/effects';
+import { AppState, appReducerBuilder } from './store/reducers';
+import {
+  ContactpagePresentationModel,
+  selectContactPagePresentationModel,
+} from './store/selectors';
+
+const buildStore = (initialState: State) => {
+  TestBed.configureTestingModule({
+    imports: [StoreModule.forRoot({ root: appReducerBuilder(initialState) })],
+    providers: [],
+  });
+
+  return TestBed.inject(Store) as Store<AppState>;
+};
 
 describe('SubmitEffect', () => {
-  let store: MockStore;
+  let store: Store<AppState>;
 
   let actions$: Observable<Action>;
   let effect: SubmitEffect;
   let fakeApiService: FakeApiService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-        imports: [
-            StoreModule.forRoot({}),
-            StoreModule.forFeature("submit", reducers),
-        ],
-      providers: [
-        SubmitEffect,
-        FakeApiService,
-        provideMockActions(() => actions$),
-        provideMockStore({initialState: initialState}),
-      ]
-    });
-
-    effect = TestBed.inject(SubmitEffect);
-    fakeApiService = TestBed.inject(FakeApiService);
-    store = TestBed.inject(MockStore);
-    //store.resetSelectors();
+    store = buildStore(initialState);
   });
 
-  it('should simulate the flow of the state on submit without the store', (done) => {
-    
+  it('should write Risto into the name field when user is typing Risto', () => {
+    let presentationModel: ContactpagePresentationModel;
+    store.dispatch(contactNameChanged({ name: 'Risto' }));
 
-    let resultstate: ContactPagePresentationModel;
-    store.select(modelSelector).subscribe((result) => {
-        if(result !== undefined){
-            done();
-        }
-        resultstate = result;
-        console.log(result);
+    store.select(selectContactPagePresentationModel).subscribe((result) => {
+      presentationModel = result.contactPage;
     });
-
-    store.dispatch(submitContactAction({request: submitcontactrequest}));
-
-    //expect(resultstate!).toEqual(initialStateaftersubmit);
+    expect(presentationModel!.form.name).toEqual('Risto');
   });
-  
-});
+
+  it('should show a successful message when the contact Risto is created', () => {
+    let presentationModel: ContactpagePresentationModel;
+    store = buildStore(formFilledState);
+    store.dispatch(submitForm());
+
+    store.select(selectContactPagePresentationModel).subscribe((result) => {
+      presentationModel = result.contactPage;
+    });
+    expect(presentationModel!.snackbar.message).toEqual('Contact Risto created');

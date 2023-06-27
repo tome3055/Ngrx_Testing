@@ -1,11 +1,26 @@
-import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { ContactPagePresentationModel } from "../interfaces/contactpage.model.interface";
+import { createSelector } from '@ngrx/store';
+import { AppState } from './reducers';
 
-export const submitFeatureSelector = createFeatureSelector<ContactPagePresentationModel>("contactpage");
+export type ContactpagePresentationModel = {
+  form: {
+    name: string;
+    linkedinUrl: string;
+    email: string;
+  };
+};
 
-export const modelSelector = createSelector(submitFeatureSelector, (model: ContactPagePresentationModel) => model);
+const buildContactPagePresentation = (
+  state: AppState
+): ContactpagePresentationModel => {
+  return {
+    form: {
+      name: state.root.form.name,
+      linkedinUrl: state.root.form.linkedinUrl,
+      email: state.root.form.email,
+    },
+  };
+};
 
-
-export const submitFeatureSelectorMock = (state: ContactPagePresentationModel) => state;//createFeatureSelector<ContactPagePresentationModel>("submit");
-
-export const mockModelSelector = createSelector(submitFeatureSelectorMock, (model: ContactPagePresentationModel) => model);
+export const selectContactPagePresentationModel = createSelector({
+  contactPage: buildContactPagePresentation,
+});

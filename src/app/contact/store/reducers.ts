@@ -1,58 +1,56 @@
-import { Action, createReducer, on } from "@ngrx/store";
+import { createReducer, on } from '@ngrx/store';
 
-import { changeContactAction, changeContactActionFailure, changeContactActionSuccess, submitContactAction, submitContactActionFailure, submitContactActionSuccess } from "./actions";
-import { ContactPagePresentationModel } from "../interfaces/contactpage.model.interface";
-import { initialState } from "../model.mock";
+import { State } from '../interfaces/contactpage.model.interface';
+import { initialState } from '../model.mock';
+import {
+  contactNameChanged,
+  submitContactAction,
+  submitContactActionFailure,
+  submitContactActionSuccess,
+} from './actions';
 
-  const submitReducer = createReducer(
-    initialState,
-    on(submitContactAction,
-    (state): ContactPagePresentationModel => ({
-    ...state,
-    isSubmitting: true
-    })),
-    on(submitContactActionSuccess,
-      (state, action): ContactPagePresentationModel => ({
+export type AppState = {
+  root: State;
+};
+
+const reducers = [
+  on(
+    contactNameChanged,
+    (state: State, action): State => ({
+      ...state,
+      form: {
+        ...state.form,
+        name: action.name,
+      },
+    })
+  ),
+  on(
+    submitContactAction,
+    (state: State): State => ({
+      ...state,
+      isSubmitting: true,
+    })
+  ),
+  on(
+    submitContactActionSuccess,
+    (state: State, action): State => ({
       ...state,
       isSubmitting: false,
       contacts: [...state.contacts, ...action.response.data],
-      })),
-    on(submitContactActionFailure,
-      (state, action): ContactPagePresentationModel => ({
+    })
+  ),
+  on(
+    submitContactActionFailure,
+    (state: State, action): State => ({
       ...state,
       isSubmitting: false,
       errors: action.response.data,
-      })),
-    );
+    })
+  ),
+];
 
-    const changeReducer = createReducer(
-    initialState,
-    on(changeContactAction,
-    (state): ContactPagePresentationModel => ({
-    ...state,
-    isSubmitting: true
-    })),
-    on(changeContactActionSuccess,
-      (state, action): ContactPagePresentationModel => ({
-      ...state,
-      isSubmitting: false,
-      contacts: [...state.contacts, ...action.response.data],
-      })),
-    on(changeContactActionFailure,
-      (state, action): ContactPagePresentationModel => ({
-      ...state,
-      isSubmitting: false,
-      errors: action.response.data,
-      })),
-    );
+export const appReducerBuilder = (initialState: State) => {
+  return createReducer(initialState, ...reducers);
+};
 
-export function reducers(state: ContactPagePresentationModel, action: Action)
-{
-  //console.log(state, action);
-  return submitReducer(state, action);
-}
-
-export function changereducers(state: ContactPagePresentationModel, action: Action)
-{
-  return changeReducer(state, action);
-}
+export const AppReducer = createReducer(initialState, ...reducers);
