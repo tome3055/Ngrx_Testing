@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { selectContactPagePresentationModelForm, selectContacts, selectIsSubmitting } from '../../store/selectors';
+import { selectContactPagePresentationModelForm, selectContacts, selectIsSubmitting, selectSnackbar } from '../../store/selectors';
 import { submitForm } from '../../store/actions';
 import { ContactInterface, ContactpagePresentationModel, ContactpagePresentationModelForm, State } from '../../interfaces/interface';
 
@@ -20,11 +20,14 @@ export class ContactComponent implements OnInit{
   isSubmitting$!: Observable<boolean>;
   presentationform!: Observable<ContactpagePresentationModelForm>;
   contacts!: ContactInterface[];
+  snapsnackbarmessage$!: String;
 
   ngOnInit(): void {
     this.isSubmitting$ = this.store.pipe(select(selectIsSubmitting));
     this.presentationform = this.store.pipe(select(selectContactPagePresentationModelForm));
-
+    this.store.select(selectSnackbar).subscribe((message: {message: string}) => {
+      this.snapsnackbarmessage$ = message.message;
+    });
 
     this.store.select(selectContacts).subscribe((contacts: ContactInterface[]) => {
       this.contacts = contacts;

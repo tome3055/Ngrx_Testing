@@ -11,6 +11,8 @@ export const selectContacts = createSelector(contactPageFeatureSelector, (state:
 
 export const selectContactPagePresentationModelForm = createSelector(contactPageFeatureSelector, (state: State) => state.form.form);
 
+export const selectSnackbar = createSelector(contactPageFeatureSelector, (state: State) => state.form.snackbar);
+
 const buildContactPagePresentation = (
   state: AppState
 ): ContactpagePresentationModel => {
