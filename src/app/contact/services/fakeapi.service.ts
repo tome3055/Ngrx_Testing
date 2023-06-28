@@ -1,30 +1,28 @@
-import { Observable } from "rxjs";
+import { Injectable } from "@angular/core";
+import { Observable, of } from "rxjs";
 import { ContactInterface } from "../interfaces/contact.interface";
 import { ContactpagePresentationModel } from "../store/selectors";
-import { Injectable } from "@angular/core";
 
 @Injectable()
 export class FakeApiService {
-    submitData(data: ContactpagePresentationModel, success: boolean): Observable<ContactInterface[]> {
-      return new Observable((observer) => {
-        console.log("inside fakeapi observable");
-        setTimeout(() => {
-          const returncontact: ContactInterface[] = 
-            [{
+  submitData(formData: ContactpagePresentationModel, success: boolean): Observable<ContactInterface[]> {
+    return new Observable<ContactInterface[]>((observer) => {
+      setTimeout(() => {
+        if (success) {
+          const contacts: ContactInterface[] = [
+            {
               id: "123",
-              name: data.name,
-              linkedinUrl: data.linkedinUrl,
-              email: data.email,
-            }];
-          console.log(returncontact);
-          //const responsefailure: SubmitContactResponseError = { success: false, data: 'Error submitting data'};
-          if (success)
-          {
-            console.log(returncontact);
-            observer.next(returncontact);
-          }
+              name: formData.name,
+              email: formData.email,
+              linkedinUrl: formData.linkedinUrl,
+            }
+          ];
+          observer.next(contacts);
           observer.complete();
-        }, 1000);
-      });
-    }
+        } else {
+          observer.error("API request failed");
+        }
+      }, 100);
+    });
   }
+}

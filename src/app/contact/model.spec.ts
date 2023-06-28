@@ -1,145 +1,64 @@
-import { TestBed } from '@angular/core/testing';
-import { provideMockActions } from '@ngrx/effects/testing';
-import { Action, StoreModule } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { Observable, of } from 'rxjs';
-import { State } from './interfaces/contactpage.model.interface';
-import {
-  afterFormSubmitState,
-  initialState,
-  initialStateaftersubmit,
-  submitcontactrequest,
-  submitcontactresponsesuccess,
-} from './model.mock';
-import { FakeApiService } from './services/fakeapi.service';
-import {
-  submitContactAction,
-  submitContactActionSuccess,
-} from './store/actions';
-import { SubmitEffect } from './store/effects';
-import { reducers } from './store/reducers';
-import { modelSelector } from './store/selectors';
+import { Observable, of } from "rxjs";
+import { Actions } from "@ngrx/effects";
+import { TestBed } from "@angular/core/testing";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { SubmitEffect } from "./store/effects";
+import { FakeApiService } from "./services/fakeapi.service";
+import { ContactInterface } from "./interfaces/contact.interface";
+import { submitForm, submitFormSuccess } from "./store/actions";
+import { ContactpagePresentationModel } from "./store/selectors";
 
-describe('SubmitEffect', () => {
-  let store: MockStore;
-
-  let actions$: Observable<Action>;
-  let effect: SubmitEffect;
-  let fakeApiService: FakeApiService;
+describe("SubmitEffect", () => {
+  let submitEffect: SubmitEffect;
+  let actions$: Observable<any>;
+  let fakeApiService: jest.Mocked<FakeApiService>;
 
   beforeEach(() => {
+    const fakeApiServiceMock: jest.Mocked<FakeApiService> = {
+      submitData: jest.fn(),
+    };
+
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({}),
-        StoreModule.forFeature('submit', reducers),
-      ],
       providers: [
         SubmitEffect,
-        FakeApiService,
         provideMockActions(() => actions$),
-        provideMockStore(),
+        { provide: FakeApiService, useValue: fakeApiServiceMock },
       ],
     });
 
-    effect = TestBed.inject(SubmitEffect);
-    fakeApiService = TestBed.inject(FakeApiService);
-    store = TestBed.inject(MockStore);
-    store.resetSelectors();
+    submitEffect = TestBed.inject(SubmitEffect);
+    actions$ = TestBed.inject(Actions);
+    fakeApiService = TestBed.inject(FakeApiService) as jest.Mocked<FakeApiService>;
   });
 
-  it('should simulate the flow of the state on submit without the store', (done) => {
-    jest
-      .spyOn(fakeApiService, 'submitData')
-      .mockReturnValue(of(submitcontactresponsesuccess));
+  it("should dispatch submitFormSuccess action on successful form submission", (done) => {
+    const form: ContactpagePresentationModel = {
+      name: "Test",
+      linkedinUrl: "test",
+      email: "test",
+      snackbar: {
+        message: ""
+      }
+    }; // Mock form data
+    const contacts: ContactInterface[] = [{
+      id: "123",
+      name: "tome",
+      email: "test",
+      linkedinUrl: "test"
+    }]; // Mock response data
 
-    //on submit flow
+    actions$ = of(submitForm({ form }));
 
-    const submitAction = submitContactAction({ request: submitcontactrequest }); // submit clicked
+    fakeApiService.submitData.mockReturnValue(of(contacts));
 
-    const submitResult = reducers(initialState, submitAction);
-
-    expect(submitResult).toEqual(initialStateaftersubmit); // isSubmitting : true
-
-    const expectedAction = submitContactActionSuccess({
-      response: submitcontactresponsesuccess,
+    submitEffect.submit$.subscribe((action: any) => {
+      expect(action).toEqual(submitFormSuccess({ contacts }));
+      expect(fakeApiService.submitData).toHaveBeenCalledWith(form, true);
+      console.log(action);
+      if(action!== undefined)
+      {
+        done();
+      }
     });
-
-    actions$ = of(submitAction);
-
-    effect.submit$.subscribe((resultAction) => {
-      //simulating how action triggers the effect
-      expect(resultAction).toEqual(expectedAction); //returns the action that needs to execute in the effect
-      expect(fakeApiService.submitData).toHaveBeenCalledWith(
-        submitcontactrequest,
-        true
-      );
-      done();
-    });
-
-    actions$ = of(expectedAction);
-
-    const successAction = submitContactActionSuccess({
-      response: submitcontactresponsesuccess,
-    }); //effect triggers the submitContactActionSuccess
-
-    const resultState = reducers(initialState, successAction); //reducer changes the state because of the success action
-
-    expect(resultState).toEqual(afterFormSubmitState);
-  });
-
-  it('should simulate the flow of the state on submit like it should be in the real store', (done) => {
-    jest
-      .spyOn(fakeApiService, 'submitData')
-      .mockReturnValue(of(submitcontactresponsesuccess));
-
-    //on submit flow
-
-    const submitAction = submitContactAction({ request: submitcontactrequest }); // submit clicked
-
-    const submitResult = reducers(initialState, submitAction);
-
-    expect(submitResult).toEqual(initialStateaftersubmit);
-
-    let state: State;
-    store.overrideSelector(modelSelector, submitResult);
-
-    store.select(modelSelector).subscribe((value) => {
-      state = value;
-    });
-
-    expect(state!).toEqual(initialStateaftersubmit); // isSubmitting : true
-
-    const expectedAction = submitContactActionSuccess({
-      response: submitcontactresponsesuccess,
-    });
-
-    actions$ = of(submitAction);
-
-    effect.submit$.subscribe((resultAction) => {
-      //simulating how action triggers the effect
-      expect(resultAction).toEqual(expectedAction); //returns the action that needs to execute in the effect
-      expect(fakeApiService.submitData).toHaveBeenCalledWith(
-        submitcontactrequest,
-        true
-      );
-      done();
-    });
-
-    actions$ = of(expectedAction);
-
-    const successAction = submitContactActionSuccess({
-      response: submitcontactresponsesuccess,
-    }); //effect triggers the submitContactActionSuccess
-
-    const resultState = reducers(initialState, successAction); //reducer changes the state because of the success action
-
-    let stateaftersuccess: State;
-    store.overrideSelector(modelSelector, resultState);
-
-    store.select(modelSelector).subscribe((value) => {
-      stateaftersuccess = value;
-    });
-
-    expect(stateaftersuccess!).toEqual(afterFormSubmitState);
   });
 });

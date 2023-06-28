@@ -2,11 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { Action, Store, StoreModule } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { State } from './interfaces/contactpage.model.interface';
-import { formFilledState, initialState } from './model.mock';
+import { formFilledState, initialState, oneContactState } from './model.mock';
 import { FakeApiService } from './services/fakeapi.service';
-import { contactNameChanged, submitForm } from './store/actions';
+import { contactNameChanged, submitForm, submitFormSuccess } from './store/actions';
 import { SubmitEffect } from './store/effects';
-import { AppState, appReducerBuilder } from './store/reducers';
+import { AppReducer, AppState, appReducerBuilder } from './store/reducers';
 import {
   ContactpagePresentationModel,
   selectContactPagePresentationModel,
@@ -21,17 +21,18 @@ const buildStore = (initialState: State) => {
     providers: [FakeApiService],
   });
 
-  return TestBed.inject(Store) as Store<AppState>;
+  return {store: TestBed.inject(Store) as Store<AppState>, effect: TestBed.inject(SubmitEffect)};
 };
 
-describe('SubmitEffect', () => {
+describe('Contact Page Test', () => {
   let store: Store<AppState>;
 
   // beforeEach(() => {
   // });
 
   it('should write Risto into the name field when user is typing Risto', () => {
-    store = buildStore(initialState);
+    const testbed = buildStore(initialState);
+    store = testbed.store;
     let presentationModel: ContactpagePresentationModel;
     store.dispatch(contactNameChanged({ name: 'Risto' }));
 
@@ -42,36 +43,69 @@ describe('SubmitEffect', () => {
     expect(presentationModel!.name).toEqual('Risto');
   });
 
-  xit('should show a successful message when the contact Bruno is created', () => {
-    store = buildStore(formFilledState);
+  it('should show a successful message when the contact Bruno is created', () => {
+    store = buildStore(initialState).store;
     let presentationModel: ContactpagePresentationModel;
-    store.dispatch(submitForm({form: formFilledState.form}));
+    store.dispatch(submitForm({form: {
+      name: "Bruno",
+      linkedinUrl: '',
+      email: '',
+      snackbar: {
+        message: ''
+      }
+    }}));
 
     store.select(selectContactPagePresentationModel).subscribe((result) => {
+      //console.log(result);
       presentationModel = result.contactPage;
     });
     expect(presentationModel!.snackbar.message).toEqual('Contact Bruno submitted');
   });
 
   it('should show a new contact in the contact list', () => {
-    store = buildStore(formFilledState);
-    let contactModel: ContactInterface;
-    let presentationModel: ContactpagePresentationModel;
+    const testbed = buildStore(initialState);
+    store = testbed.store;
+    let contactModel: ContactInterface[];
+    const contact: ContactInterface = {
+        id: "123", 
+        name: "Bruno", 
+        email: "Bruno@ludotech.co", 
+        linkedinUrl: "linkedin.com/bruno",
+    }
 
-    store.dispatch(submitForm({form: formFilledState.form}));
+    store.dispatch(submitFormSuccess({contacts: [contact]}));
 
-    store.select(selectContactPagePresentationModel).subscribe((result) => {
-      presentationModel = result.contactPage;
-    });
-
-    expect(presentationModel!.snackbar.message).toEqual('Contact Bruno submitted');
-
-    store.select(selectContactsFromAppState).subscribe((result) => {
-      contactModel = result.contacts;
-      console.log(result);
-    });
+     store.select(selectContactsFromAppState).subscribe((result) => {
+       contactModel = result.contacts;
+     });
 
 
-    expect(contactModel!).toEqual({id: "123", name: "Bruno", email: "Bruno@ludotech.co", linkedinUrl: "linkedin.com/bruno"});
+    expect(contactModel!).toEqual([{id: "123", name: "Bruno", email: "Bruno@ludotech.co", linkedinUrl: "linkedin.com/bruno"}]);
   });
+
+  it('should show a new contact in the contact list when on submit', (done) => {
+    const testbed = buildStore(initialState);
+    store = testbed.store;
+    const form: ContactpagePresentationModel = {
+      name: "Bruno",
+      linkedinUrl: "linkedin.com/bruno",
+      email: "Bruno@ludotech.co",
+      snackbar: {
+        message: ""
+      }
+    };
+  
+    store.dispatch(submitForm({ form: form }));
+  
+    let contact: ContactInterface[];
+    store.select(selectContactsFromAppState).subscribe((result) => {
+      contact = result.contacts;
+  
+      if (contact.length >= 1) {
+        expect(contact!).toEqual([{ id: "123", name: "Bruno", email: "Bruno@ludotech.co", linkedinUrl: "linkedin.com/bruno" }]);
+        done(); 
+      }
+    });
+  });
+  
 });

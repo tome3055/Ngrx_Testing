@@ -1,62 +1,37 @@
-import { ContactInterface } from "../interfaces/contact.interface";
-import { SubmitContactResponseSuccess } from "../interfaces/submitcontactresponse.interface";
-import { submitcontactrequest } from "../model.mock";
+import { TestBed } from "@angular/core/testing";
 import { FakeApiService } from "./fakeapi.service";
+import { ContactInterface } from "../interfaces/contact.interface";
+import { ContactpagePresentationModel } from "../store/selectors";
 
-describe('fakeapi', () => {
+describe("FakeApiService", () => {
+  let service: FakeApiService;
 
-it('should dispatch success action on successful API response', (done) => {
-  const fakeapi = new FakeApiService();
-
-  let res: ContactInterface;
-  fakeapi.submitData({
-    name: "test",
-    linkedinUrl: "test",
-    email: "test",
-    snackbar: {
-      message: ""
-    }
-  } ,true).subscribe((data) => { //true - simulate successful response
-    res = data;
-
-    const expected: ContactInterface = {
-      id: "",
-      name: "test",
-      email: "test",
-      linkedinUrl: "test"
-    };
-    expect(res).toEqual(expected);
-    done();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [FakeApiService],
+    });
+    service = TestBed.inject(FakeApiService);
   });
-  done();
-});
 
-    
-xit('should dispatch failiure action on failed API response', (done) => {
-  const fakeapi = new FakeApiService();
+  it("should return contacts when submitData is called with success flag set to true", (done) => {
 
-  let res: ContactInterface;
-  fakeapi.submitData({
-    name: "",
-    linkedinUrl: "",
-    email: "",
-    snackbar: {
-      message: ""
-    }
-  } ,true).subscribe((data) => { //false - simulate unsuccessful response
-    res = data;
-
-    const expected: ContactInterface = {
-      id: "",
-      name: "",
+    const submitdata: ContactpagePresentationModel = {
+      name: "John Doe",
+      linkedinUrl: "",
       email: "",
-      linkedinUrl: ""
-    };
-    expect(res).toEqual(expected);
-    done();
+      snackbar: {
+        message: ""
+      }
+    }
+    const expectedcontacts: ContactInterface[] = [
+      { id: "1", name: "John Doe", email: "john@example.com", linkedinUrl: "" },
+      { id: "2", name: "Jane Smith", email: "jane@example.com", linkedinUrl: "" },
+    ]
+    const success = true;
+
+    service.submitData(submitdata, success).subscribe((contacts) => {
+      expect(contacts).toEqual(expectedcontacts);
+      done();
+    });
   });
-
-  done();
-});
-
 });

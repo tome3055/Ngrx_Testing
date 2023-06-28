@@ -5,8 +5,8 @@ import { State } from '../interfaces/contactpage.model.interface';
 import { FormModelInterface } from '../interfaces/form.model.interface';
 import { SubmitContactRequest } from '../interfaces/submitcontactrequest.interface';
 import { SubmitContactResponseSuccess } from '../interfaces/submitcontactresponse.interface';
-import { submitContactAction, submitContactActionSuccess } from './actions';
-import { reducers } from './reducers';
+// import { submitContactAction, submitContactActionSuccess } from './actions';
+// import { reducers } from './reducers';
 
 describe('store', () => {
   //let component: ContactComponent;

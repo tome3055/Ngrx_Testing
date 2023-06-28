@@ -25,13 +25,8 @@ const buildContactPagePresentation = (
   };
 };
 
-const buildContacts = (state: AppState): ContactInterface => {
-  return {
-    id: state.root.contacts[0].id,
-    name: state.root.contacts[0].name,
-    email: state.root.contacts[0].email,
-    linkedinUrl: state.root.contacts[0].linkedinUrl,
-  };
+const buildContacts = (state: AppState): ContactInterface[] => {
+  return state.root.contacts;
 };
 
 export const selectContactPagePresentationModel = createSelector({

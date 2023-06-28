@@ -35,7 +35,7 @@ const reducers = [
           email: action.form.email,
           linkedinUrl: action.form.linkedinUrl,
           snackbar: {
-            message: `Contact ${state.form.name} submitted`,
+            message: `Contact ${action.form.name} submitted`,
           }
       },
       
@@ -48,12 +48,9 @@ const reducers = [
       isSubmitting: true,
       form: {
         ...state.form,
-          name: "",
-          email: "",
-          linkedinUrl: "",
-          snackbar: {
-            message: `Contact ${state.form.name} created`,
-          }
+        snackbar: {
+          message: `Contact ${action.contacts[action.contacts.length - 1].name} created`,
+        }
       },
       contacts: [...state.contacts, ...action.contacts]
       

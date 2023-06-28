@@ -45,6 +45,25 @@ export const formFilledState: State = {
   contacts: [],
 };
 
+export const oneContactState: State = {
+  form: {
+      name: 'Bruno',
+      linkedinUrl: 'linkedin.com/bruno',
+      email: 'Bruno@ludotech.co',
+    snackbar: {
+      message: ''
+    }
+  },
+  errors: '',
+  isSubmitting: false,
+  contacts: [{
+    id: "123",
+    name: 'Bruno',
+    linkedinUrl: 'linkedin.com/bruno',
+    email: 'Bruno@ludotech.co',
+  }],
+};
+
 export const afterFormSubmitState: State = {
   form: {
       name: '',
