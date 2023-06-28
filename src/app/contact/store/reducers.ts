@@ -5,7 +5,7 @@ import {
   submitForm,
   submitFormSuccess,
 } from './actions';
-import { State } from '../interfaces/interface';
+import { ContactpagePresentationModel, ContactpagePresentationModelForm, State } from '../interfaces/interface';
 
 export type AppState = {
   root: State;
@@ -14,7 +14,7 @@ export type AppState = {
 const reducers = [
   on(
     contactNameChanged,
-    (state: State, action): State => ({
+    (state: State, action: { name: string }): State => ({
       ...state,
       form: {
         ...state.form,
@@ -28,7 +28,7 @@ const reducers = [
   ),
   on(
     submitForm,
-    (state: State, action): State => ({
+    (state: State, action: {form: ContactpagePresentationModel}): State => ({
       ...state,
       isSubmitting: true,
       form: {
@@ -49,9 +49,14 @@ const reducers = [
     submitFormSuccess,
     (state: State, action): State => ({
       ...state,
-      isSubmitting: true,
+      isSubmitting: false,
       form: {
         ...state.form,
+        form: {
+          name: '',
+          email: '',
+          linkedinUrl: '',
+        },
         snackbar: {
           message: `Contact ${action.contacts[action.contacts.length - 1].name} created`,
         }

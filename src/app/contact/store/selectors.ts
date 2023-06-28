@@ -1,6 +1,15 @@
-import { createSelector } from '@ngrx/store';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+
 import { AppState } from './reducers';
-import { ContactInterface, ContactpagePresentationModel } from '../interfaces/interface';
+import { ContactInterface, ContactpagePresentationModel, State } from '../interfaces/interface';
+
+export const contactPageFeatureSelector = createFeatureSelector<State>("contacts");
+
+export const selectIsSubmitting = createSelector(contactPageFeatureSelector, (state: State) => state.isSubmitting);
+
+export const selectContacts = createSelector(contactPageFeatureSelector, (state: State) => state.contacts);
+
+export const selectContactPagePresentationModelForm = createSelector(contactPageFeatureSelector, (state: State) => state.form.form);
 
 const buildContactPagePresentation = (
   state: AppState

@@ -34,7 +34,6 @@ describe('Contact Page Test', () => {
     store.dispatch(contactNameChanged({ name: 'Risto' }));
 
     store.select(selectContactPagePresentationModel).subscribe((result) => {
-      //console.log(result)
       presentationModel = result.contactPage;
     });
     expect(presentationModel!.form.name).toEqual('Risto');
@@ -101,7 +100,6 @@ describe('Contact Page Test', () => {
 
     store.select(selectContactPagePresentationModel).subscribe((result) => {
         if(contact.length >= 1){
-          //console.log(result.contactPage.snackbar.message);
           expect(result.contactPage.snackbar.message).toEqual('Contact Bruno created');
           done();
         }
