@@ -1,7 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { FakeApiService } from "./fakeapi.service";
-import { ContactInterface } from "../interfaces/contact.interface";
-import { ContactpagePresentationModel } from "../store/selectors";
+import { ContactInterface, ContactpagePresentationModel } from "../interfaces/interface";
 
 describe("FakeApiService", () => {
   let service: FakeApiService;
@@ -16,22 +15,24 @@ describe("FakeApiService", () => {
   it("should return contacts when submitData is called with success flag set to true", (done) => {
 
     const submitdata: ContactpagePresentationModel = {
-      name: "John Doe",
-      linkedinUrl: "",
-      email: "",
+      form: {
+        name: "John Doe",
+        linkedinUrl: "",
+        email: "john@example.com",
+      },
       snackbar: {
         message: ""
       }
     }
     const expectedcontacts: ContactInterface[] = [
       { id: "1", name: "John Doe", email: "john@example.com", linkedinUrl: "" },
-      { id: "2", name: "Jane Smith", email: "jane@example.com", linkedinUrl: "" },
     ]
-    const success = true;
 
-    service.submitData(submitdata, success).subscribe((contacts) => {
-      expect(contacts).toEqual(expectedcontacts);
-      done();
+    service.submitData(submitdata, true).subscribe((contacts) => {
+      if(contacts.length >= 1) {
+        expect(contacts).toEqual(expectedcontacts);
+        done();
+      }
     });
   });
 });

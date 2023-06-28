@@ -1,13 +1,12 @@
-import { ContactInterface } from './interfaces/contact.interface';
-import { State } from './interfaces/contactpage.model.interface';
-import { SubmitContactRequest } from './interfaces/submitcontactrequest.interface';
-import { SubmitContactResponseSuccess } from './interfaces/submitcontactresponse.interface';
+import { ContactInterface, State } from "./interfaces/interface";
 
 export const initialState: State = {
   form: {
+    form: {
       name: '',
       linkedinUrl: '',
       email: '',
+    },
     snackbar: {
       message: ''
     }
@@ -19,9 +18,11 @@ export const initialState: State = {
 
 export const initialStateaftersubmit: State = {
   form: {
+    form : {      
       name: '',
       linkedinUrl: '',
       email: '',
+    },
     snackbar: {
       message: ''
     }
@@ -33,9 +34,11 @@ export const initialStateaftersubmit: State = {
 
 export const formFilledState: State = {
   form: {
+    form: {
       name: 'Bruno',
       linkedinUrl: 'linkedin.com/bruno',
       email: 'Bruno@ludotech.co',
+    },
     snackbar: {
       message: ''
     }
@@ -47,9 +50,11 @@ export const formFilledState: State = {
 
 export const oneContactState: State = {
   form: {
+    form: {
       name: 'Bruno',
       linkedinUrl: 'linkedin.com/bruno',
       email: 'Bruno@ludotech.co',
+    },
     snackbar: {
       message: ''
     }
@@ -66,9 +71,11 @@ export const oneContactState: State = {
 
 export const afterFormSubmitState: State = {
   form: {
+    form: {
       name: '',
       linkedinUrl: '',
       email: '',
+    },
     snackbar: {
       message: ''
     }
@@ -85,14 +92,6 @@ export const afterFormSubmitState: State = {
   ],
 };
 
-export const submitcontactrequest: SubmitContactRequest = {
-  form: {
-    name: 'Bruno',
-    linkedinUrl: 'linkedin.com/bruno',
-    email: 'Bruno@ludotech.co',
-  },
-};
-
 const returncontacts: ContactInterface[] = [
   {
     id: '123',
@@ -101,8 +100,3 @@ const returncontacts: ContactInterface[] = [
     email: 'Bruno@ludotech.co',
   },
 ];
-
-export const submitcontactresponsesuccess: SubmitContactResponseSuccess = {
-  success: true,
-  data: returncontacts,
-};

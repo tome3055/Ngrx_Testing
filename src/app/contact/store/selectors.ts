@@ -1,24 +1,16 @@
 import { createSelector } from '@ngrx/store';
 import { AppState } from './reducers';
-import { ContactInterface } from '../interfaces/contact.interface';
-
-export type ContactpagePresentationModel = {
-    name: string;
-    linkedinUrl: string;
-    email: string;
-    snackbar: {
-      message: string;
-    }
-};
+import { ContactInterface, ContactpagePresentationModel } from '../interfaces/interface';
 
 const buildContactPagePresentation = (
   state: AppState
 ): ContactpagePresentationModel => {
   return {
-      name: state.root.form.name,
-      linkedinUrl: state.root.form.linkedinUrl,
-      email: state.root.form.email,
-      
+    form: {
+      name: state.root.form.form.name,
+      linkedinUrl: state.root.form.form.linkedinUrl,
+      email: state.root.form.form.email,
+    },
     snackbar: {
       message: state.root.form.snackbar.message,
     }

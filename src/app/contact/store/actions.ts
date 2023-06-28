@@ -1,10 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { SubmitContactResponseError } from '../interfaces/submitContactResponseError.interface';
-import { SubmitContactRequest } from '../interfaces/submitcontactrequest.interface';
-import { SubmitContactResponseSuccess } from '../interfaces/submitcontactresponse.interface';
 import { ActionTypes } from './actionTypes';
-import { ContactpagePresentationModel } from './selectors';
-import { ContactInterface } from '../interfaces/contact.interface';
+import { ContactInterface, ContactpagePresentationModel } from '../interfaces/interface';
 
 // export const submitContactAction = createAction(
 //   ActionTypes.SUBMIT,

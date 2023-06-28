@@ -1,12 +1,11 @@
 import { createReducer, on } from '@ngrx/store';
-
-import { State } from '../interfaces/contactpage.model.interface';
 import { initialState } from '../model.mock';
 import {
   contactNameChanged,
   submitForm,
   submitFormSuccess,
 } from './actions';
+import { State } from '../interfaces/interface';
 
 export type AppState = {
   root: State;
@@ -19,7 +18,10 @@ const reducers = [
       ...state,
       form: {
         ...state.form,
-          name: action.name,
+          form: {
+            ...state.form.form,
+            name: action.name,
+          }
       },
       
     })
@@ -31,11 +33,13 @@ const reducers = [
       isSubmitting: true,
       form: {
         ...state.form,
-          name: action.form.name,
-          email: action.form.email,
-          linkedinUrl: action.form.linkedinUrl,
+        form: {
+          name: action.form.form.name,
+          email: action.form.form.email,
+          linkedinUrl: action.form.form.linkedinUrl,
+        },
           snackbar: {
-            message: `Contact ${action.form.name} submitted`,
+            message: `Contact ${action.form.form.name} submitted`,
           }
       },
       

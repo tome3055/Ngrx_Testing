@@ -1,19 +1,16 @@
 import { TestBed } from '@angular/core/testing';
-import { Action, Store, StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { State } from './interfaces/contactpage.model.interface';
+import { Store, StoreModule } from '@ngrx/store';
 import { formFilledState, initialState, oneContactState } from './model.mock';
 import { FakeApiService } from './services/fakeapi.service';
 import { contactNameChanged, submitForm, submitFormSuccess } from './store/actions';
 import { SubmitEffect } from './store/effects';
-import { AppReducer, AppState, appReducerBuilder } from './store/reducers';
+import { AppState, appReducerBuilder } from './store/reducers';
 import {
-  ContactpagePresentationModel,
   selectContactPagePresentationModel,
   selectContactsFromAppState,
 } from './store/selectors';
-import { ContactInterface } from './interfaces/contact.interface';
 import { EffectsModule } from '@ngrx/effects';
+import { ContactInterface, ContactpagePresentationModel, State } from './interfaces/interface';
 
 const buildStore = (initialState: State) => {
   TestBed.configureTestingModule({
@@ -40,20 +37,13 @@ describe('Contact Page Test', () => {
       //console.log(result)
       presentationModel = result.contactPage;
     });
-    expect(presentationModel!.name).toEqual('Risto');
+    expect(presentationModel!.form.name).toEqual('Risto');
   });
 
   it('should show a successful message when the contact Bruno is created', () => {
-    store = buildStore(initialState).store;
+    store = buildStore(formFilledState).store;
     let presentationModel: ContactpagePresentationModel;
-    store.dispatch(submitForm({form: {
-      name: "Bruno",
-      linkedinUrl: '',
-      email: '',
-      snackbar: {
-        message: ''
-      }
-    }}));
+    store.dispatch(submitForm({form: formFilledState.form}));
 
     store.select(selectContactPagePresentationModel).subscribe((result) => {
       //console.log(result);
@@ -67,7 +57,7 @@ describe('Contact Page Test', () => {
     store = testbed.store;
     let contactModel: ContactInterface[];
     const contact: ContactInterface = {
-        id: "123", 
+        id: "1", 
         name: "Bruno", 
         email: "Bruno@ludotech.co", 
         linkedinUrl: "linkedin.com/bruno",
@@ -80,16 +70,18 @@ describe('Contact Page Test', () => {
      });
 
 
-    expect(contactModel!).toEqual([{id: "123", name: "Bruno", email: "Bruno@ludotech.co", linkedinUrl: "linkedin.com/bruno"}]);
+    expect(contactModel!).toEqual([{id: "1", name: "Bruno", email: "Bruno@ludotech.co", linkedinUrl: "linkedin.com/bruno"}]);
   });
 
   it('should show a new contact in the contact list when on submit', (done) => {
     const testbed = buildStore(initialState);
     store = testbed.store;
     const form: ContactpagePresentationModel = {
-      name: "Bruno",
-      linkedinUrl: "linkedin.com/bruno",
-      email: "Bruno@ludotech.co",
+      form: {
+        name: "Bruno",
+        linkedinUrl: "linkedin.com/bruno",
+        email: "Bruno@ludotech.co",
+      },
       snackbar: {
         message: ""
       }
@@ -102,10 +94,18 @@ describe('Contact Page Test', () => {
       contact = result.contacts;
   
       if (contact.length >= 1) {
-        expect(contact!).toEqual([{ id: "123", name: "Bruno", email: "Bruno@ludotech.co", linkedinUrl: "linkedin.com/bruno" }]);
-        done(); 
+        expect(contact!).toEqual([{ id: "1", name: "Bruno", email: "Bruno@ludotech.co", linkedinUrl: "linkedin.com/bruno" }]);
+        //done(); 
       }
     });
+
+    store.select(selectContactPagePresentationModel).subscribe((result) => {
+        if(contact.length >= 1){
+          //console.log(result.contactPage.snackbar.message);
+          expect(result.contactPage.snackbar.message).toEqual('Contact Bruno created');
+          done();
+        }
+    });
+    
   });
-  
 });

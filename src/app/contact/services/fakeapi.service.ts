@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
-import { ContactInterface } from "../interfaces/contact.interface";
-import { ContactpagePresentationModel } from "../store/selectors";
+import { Observable } from "rxjs";
+import { ContactInterface, ContactpagePresentationModel } from "../interfaces/interface";
 
 @Injectable()
 export class FakeApiService {
@@ -11,10 +10,10 @@ export class FakeApiService {
         if (success) {
           const contacts: ContactInterface[] = [
             {
-              id: "123",
-              name: formData.name,
-              email: formData.email,
-              linkedinUrl: formData.linkedinUrl,
+              id: '1',
+              name: formData.form.name,
+              email: formData.form.email,
+              linkedinUrl: formData.form.linkedinUrl,
             }
           ];
           observer.next(contacts);

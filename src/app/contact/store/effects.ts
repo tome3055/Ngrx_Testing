@@ -3,8 +3,8 @@ import { submitForm, submitFormSuccess } from "./actions";
 import { map, switchMap } from "rxjs/operators";
 import { FakeApiService } from "../services/fakeapi.service";
 import { Injectable } from "@angular/core";
-import { ContactInterface } from "../interfaces/contact.interface";
 import { Action } from '@ngrx/store';
+import { ContactInterface } from "../interfaces/interface";
 
 @Injectable()
 export class SubmitEffect {

@@ -4,9 +4,8 @@ import { TestBed } from "@angular/core/testing";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { SubmitEffect } from "./store/effects";
 import { FakeApiService } from "./services/fakeapi.service";
-import { ContactInterface } from "./interfaces/contact.interface";
 import { submitForm, submitFormSuccess } from "./store/actions";
-import { ContactpagePresentationModel } from "./store/selectors";
+import { ContactInterface, ContactpagePresentationModel } from "./interfaces/interface";
 
 describe("SubmitEffect", () => {
   let submitEffect: SubmitEffect;
@@ -33,19 +32,21 @@ describe("SubmitEffect", () => {
 
   it("should dispatch submitFormSuccess action on successful form submission", (done) => {
     const form: ContactpagePresentationModel = {
-      name: "Test",
-      linkedinUrl: "test",
-      email: "test",
+      form : {
+        name: "Test",
+        linkedinUrl: "test",
+        email: "test",
+      },
       snackbar: {
         message: ""
       }
-    }; // Mock form data
+    };
     const contacts: ContactInterface[] = [{
       id: "123",
       name: "tome",
       email: "test",
       linkedinUrl: "test"
-    }]; // Mock response data
+    }]; 
 
     actions$ = of(submitForm({ form }));
 
@@ -54,7 +55,7 @@ describe("SubmitEffect", () => {
     submitEffect.submit$.subscribe((action: any) => {
       expect(action).toEqual(submitFormSuccess({ contacts }));
       expect(fakeApiService.submitData).toHaveBeenCalledWith(form, true);
-      console.log(action);
+      //console.log(action);
       if(action!== undefined)
       {
         done();
