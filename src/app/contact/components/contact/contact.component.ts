@@ -46,13 +46,8 @@ export class ContactComponent implements OnInit{
 
   onSubmit(): void {
 
-    const submitFormValue: {form: ContactpagePresentationModel} = {
-      form: {
+    const submitFormValue: {form: ContactpagePresentationModelForm} = {
         form: this.form.value,
-        snackbar: {
-          message: ''
-        }
-      }
     }
     
 

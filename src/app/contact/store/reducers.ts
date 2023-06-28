@@ -28,19 +28,19 @@ const reducers = [
   ),
   on(
     submitForm,
-    (state: State, action: {form: ContactpagePresentationModel}): State => ({
+    (state: State, action: {form: ContactpagePresentationModelForm}): State => ({
       ...state,
       isSubmitting: true,
       form: {
         ...state.form,
         form: {
-          name: action.form.form.name,
-          email: action.form.form.email,
-          linkedinUrl: action.form.form.linkedinUrl,
+          name: action.form.name,
+          email: action.form.email,
+          linkedinUrl: action.form.linkedinUrl,
         },
           snackbar: {
-            message: `Contact ${action.form.form.name} submitted`,
-          }
+            message: `Contact ${action.form.name} Submitted`,
+        }
       },
       
     })
@@ -58,7 +58,7 @@ const reducers = [
           linkedinUrl: '',
         },
         snackbar: {
-          message: `Contact ${action.contacts[action.contacts.length - 1].name} created`,
+          message: `Contact ${action.contacts[action.contacts.length - 1].name} Created`,
         }
       },
       contacts: [...state.contacts, ...action.contacts]

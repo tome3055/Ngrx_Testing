@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { FakeApiService } from "./fakeapi.service";
-import { ContactInterface, ContactpagePresentationModel } from "../interfaces/interface";
+import { ContactInterface, ContactpagePresentationModel, ContactpagePresentationModelForm } from "../interfaces/interface";
 
 describe("FakeApiService", () => {
   let service: FakeApiService;
@@ -14,15 +14,10 @@ describe("FakeApiService", () => {
 
   it("should return contacts when submitData is called with success flag set to true", (done) => {
 
-    const submitdata: ContactpagePresentationModel = {
-      form: {
+    const submitdata: ContactpagePresentationModelForm = {
         name: "John Doe",
         linkedinUrl: "",
         email: "john@example.com",
-      },
-      snackbar: {
-        message: ""
-      }
     }
     const expectedcontacts: ContactInterface[] = [
       { id: "1", name: "John Doe", email: "john@example.com", linkedinUrl: "" },

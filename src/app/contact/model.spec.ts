@@ -5,7 +5,7 @@ import { provideMockActions } from "@ngrx/effects/testing";
 import { SubmitEffect } from "./store/effects";
 import { FakeApiService } from "./services/fakeapi.service";
 import { submitForm, submitFormSuccess } from "./store/actions";
-import { ContactInterface, ContactpagePresentationModel } from "./interfaces/interface";
+import { ContactInterface, ContactpagePresentationModelForm } from "./interfaces/interface";
 
 describe("SubmitEffect", () => {
   let submitEffect: SubmitEffect;
@@ -31,15 +31,10 @@ describe("SubmitEffect", () => {
   });
 
   it("should dispatch submitFormSuccess action on successful form submission", (done) => {
-    const form: ContactpagePresentationModel = {
-      form : {
+    const form: ContactpagePresentationModelForm = {
         name: "Test",
         linkedinUrl: "test",
         email: "test",
-      },
-      snackbar: {
-        message: ""
-      }
     };
     const contacts: ContactInterface[] = [{
       id: "123",
