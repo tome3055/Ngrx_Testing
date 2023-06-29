@@ -1,6 +1,8 @@
 import { createReducer, on } from '@ngrx/store';
 import { initialState } from '../model.mock';
 import {
+  contactEmailChanged,
+  contactLinkedInUrlChanged,
   contactNameChanged,
   submitForm,
   submitFormSuccess,
@@ -21,6 +23,34 @@ const reducers = [
           form: {
             ...state.form.form,
             name: action.name,
+          }
+      },
+      
+    })
+  ),
+  on(
+    contactEmailChanged,
+    (state: State, action: { email: string }): State => ({
+      ...state,
+      form: {
+        ...state.form,
+          form: {
+            ...state.form.form,
+            email: action.email,
+          }
+      },
+      
+    })
+  ),
+  on(
+    contactLinkedInUrlChanged,
+    (state: State, action: { linkedinUrl: string }): State => ({
+      ...state,
+      form: {
+        ...state.form,
+          form: {
+            ...state.form.form,
+            linkedinUrl: action.linkedinUrl,
           }
       },
       

@@ -4,7 +4,7 @@ import { formFilledState, initialState } from './model.mock';
 import { EffectsModule } from '@ngrx/effects';
 
 import { FakeApiService } from './services/fakeapi.service';
-import { contactNameChanged, submitForm, submitFormSuccess } from './store/actions';
+import { contactEmailChanged, contactLinkedInUrlChanged, contactNameChanged, submitForm, submitFormSuccess } from './store/actions';
 import { SubmitEffect } from './store/effects';
 import { AppState, appReducerBuilder } from './store/reducers';
 import {
@@ -38,6 +38,30 @@ describe('Contact Page Test', () => {
       presentationModel = result.contactPage;
     });
     expect(presentationModel!.form.name).toEqual('Risto');
+  });
+
+  it('should write Risto@ludotech.co into the email field when user is typing Risto@ludotech.co', () => {
+    const testbed = buildStore(initialState);
+    store = testbed.store;
+    let presentationModel: ContactpagePresentationModel;
+    store.dispatch(contactEmailChanged({ email: 'Risto@ludotech.co' }));
+
+    store.select(selectContactPagePresentationModel).subscribe((result) => {
+      presentationModel = result.contactPage;
+    });
+    expect(presentationModel!.form.email).toEqual('Risto@ludotech.co');
+  });
+
+  it('should write linkedin.com/risto into the linkedinUrl field when user is typing linkedin.com/risto', () => {
+    const testbed = buildStore(initialState);
+    store = testbed.store;
+    let presentationModel: ContactpagePresentationModel;
+    store.dispatch(contactLinkedInUrlChanged({ linkedinUrl: 'linkedin.com/risto' }));
+
+    store.select(selectContactPagePresentationModel).subscribe((result) => {
+      presentationModel = result.contactPage;
+    });
+    expect(presentationModel!.form.linkedinUrl).toEqual('linkedin.com/risto');
   });
 
   it('should show a successful message when the contact Bruno is created', () => {
@@ -90,7 +114,7 @@ describe('Contact Page Test', () => {
   
       if (contact.length >= 1) {
         expect(contact!).toEqual([{ id: "1", name: "Bruno", email: "Bruno@ludotech.co", linkedinUrl: "linkedin.com/bruno" }]);
-        //done(); 
+        //done();
       }
     });
 

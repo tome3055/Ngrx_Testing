@@ -7,6 +7,16 @@ export const contactNameChanged = createAction(
   props<{
     name: string;
   }>());
+  export const contactEmailChanged = createAction(
+  ActionTypes.CONTACT_MODIFIED,
+  props<{
+    email: string;
+  }>());
+export const contactLinkedInUrlChanged = createAction(
+  ActionTypes.CONTACT_MODIFIED,
+  props<{
+    linkedinUrl: string;
+  }>());
 export const submitForm = createAction(
   ActionTypes.CONTACT_SUBMITED,
   props<{
