@@ -48,7 +48,7 @@ describe('Contact Page Test', () => {
 
     store.select(selectContactPagePresentationModel).subscribe((result) => {
       presentationModel = result.contactPage;
-    });
+    }); 
     expect(presentationModel!.form.email).toEqual('Risto@ludotech.co');
   });
 
@@ -76,29 +76,8 @@ describe('Contact Page Test', () => {
     expect(presentationModel!.snackbar.message).toEqual('Contact Bruno Submitted');
   });
 
-  it('should show a new contact in the contact list', () => {
-    const testbed = buildStore(initialState);
-    store = testbed.store;
-    let contactModel: ContactInterface[];
-    const contact: ContactInterface = {
-        id: "1", 
-        name: "Bruno", 
-        email: "Bruno@ludotech.co", 
-        linkedinUrl: "linkedin.com/bruno",
-    }
-
-    store.dispatch(submitFormSuccess({contacts: [contact]}));
-
-     store.select(selectContactsFromAppState).subscribe((result) => {
-       contactModel = result.contacts;
-     });
-
-
-    expect(contactModel!).toEqual([{id: "1", name: "Bruno", email: "Bruno@ludotech.co", linkedinUrl: "linkedin.com/bruno"}]);
-  });
-
-  it('should show a new contact in the contact list when on submit', (done) => {
-    const testbed = buildStore(initialState);
+  it('should show a new contact in the contact list when pressing submit', (done) => {
+    const testbed = buildStore(formFilledState);
     store = testbed.store;
     const form: ContactpagePresentationModelForm = {
         name: "Bruno",
@@ -112,7 +91,7 @@ describe('Contact Page Test', () => {
     store.select(selectContactsFromAppState).subscribe((result) => {
       contact = result.contacts;
   
-      if (contact.length >= 1) {
+      if (contact.length >= 1) { //wait for the api call to finish
         expect(contact!).toEqual([{ id: "1", name: "Bruno", email: "Bruno@ludotech.co", linkedinUrl: "linkedin.com/bruno" }]);
         //done();
       }
