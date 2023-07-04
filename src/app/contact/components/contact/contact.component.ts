@@ -4,9 +4,9 @@ import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { selectContactPagePresentationModelForm, selectContacts, selectIsSubmitting, selectSnackbar } from '../../store/selectors';
+import { selectContactPagePresentationModel } from '../../store/selectors';
 import { contactEmailChanged, contactLinkedInUrlChanged, contactNameChanged, submitForm } from '../../store/actions';
-import { ContactInterface, ContactpagePresentationModel, ContactpagePresentationModelForm, State } from '../../interfaces/interface';
+import { ContactInterface, ContactpagePresentationModel, ContactForm, State, AppState } from '../../interfaces/interface';
 
 
 
@@ -18,8 +18,8 @@ import { ContactInterface, ContactpagePresentationModel, ContactpagePresentation
 export class ContactComponent implements OnInit{
   form: FormGroup = new FormGroup({});
   isSubmitting$!: Observable<boolean>;
-  presentationform$!: Observable<ContactpagePresentationModelForm>;
-  contacts!: ContactInterface[];
+  presentationform$!: Observable<{contactPage: ContactpagePresentationModel}>;
+  contacts: ContactInterface[] = [];
   snapsnackbarmessage$!: String;
 
   name: string = "";
@@ -27,42 +27,29 @@ export class ContactComponent implements OnInit{
   linkedinUrl: string = "";
 
   ngOnInit(): void {
-    this.isSubmitting$ = this.store.pipe(select(selectIsSubmitting));
-    this.presentationform$ = this.store.pipe(select(selectContactPagePresentationModelForm));
-
-    
-    //this.store.select(selectContactPagePresentationModelForm);
-
+    //this.isSubmitting$ = this.store.pipe(select(selectIsSubmitting));
+    this.presentationform$ = this.store.pipe(select(selectContactPagePresentationModel));
     
 
-    this.store.select(selectSnackbar).subscribe((message: {message: string}) => {
-      this.snapsnackbarmessage$ = message.message;
-    });
-
-    this.store.select(selectContacts).subscribe((contacts: ContactInterface[]) => {
-      this.contacts = contacts;
-    });
-
-    //this.form = this.fb.group({
-    //  name: ["", Validators.required],
-    //  email: ["", Validators.required],
-    //  linkedinUrl: ["", Validators.required]
+    //this.store.select(selectContacts).subscribe((contacts: ContactInterface[]) => {
+    //  this.contacts = contacts;
     //});
 
     this.presentationform$.subscribe(value => {
-     //this.form.patchValue(value);
-     this.name = value.name;
-     this.email = value.email;
-     this.linkedinUrl = value.linkedinUrl;
-
      console.log(value);
+     this.contacts = value.contactPage.contacts;
+     this.name = value.contactPage.form.name;
+     this.email = value.contactPage.form.email;
+     this.linkedinUrl = value.contactPage.form.linkedinUrl;
+     this.snapsnackbarmessage$ = value.contactPage.snackbar.message;
+     //this.isSubmitting$ = value.contactPage
     });
   }
 
   onSubmit(event: Event) {
     event.preventDefault();
 
-    const submitFormValue: {form: ContactpagePresentationModelForm} = {
+    const submitFormValue: {form: ContactForm} = {
         form: {
           name: this.name,
           email: this.email,
@@ -70,6 +57,7 @@ export class ContactComponent implements OnInit{
         },
     }
     
+    console.log(submitFormValue);
 
     this.store.dispatch(submitForm(submitFormValue));
 
@@ -95,6 +83,6 @@ export class ContactComponent implements OnInit{
     this.store.dispatch(contactLinkedInUrlChanged({linkedinUrl}));
   }
 
-  constructor(private fb: FormBuilder, private store: Store,private router: Router) {}
+  constructor(private store: Store<AppState>) {}
 
 }

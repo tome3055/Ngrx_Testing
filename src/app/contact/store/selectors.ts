@@ -1,41 +1,71 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
-import { AppState } from './reducers';
-import { ContactInterface, ContactpagePresentationModel, State } from '../interfaces/interface';
+import { AppState, ContactInterface, ContactpagePresentationModel, State } from '../interfaces/interface';
 
-export const contactPageFeatureSelector = createFeatureSelector<State>("contacts");
+export const contactPageFeatureSelector = createFeatureSelector<AppState>("contacts");
 
-export const selectIsSubmitting = createSelector(contactPageFeatureSelector, (state: State) => state.isSubmitting);
 
-export const selectContacts = createSelector(contactPageFeatureSelector, (state: State) => state.contacts);
+const getFormState = createSelector(
+  contactPageFeatureSelector,
+  (state: AppState) => state.root.form
+);
 
-export const selectContactPagePresentationModelForm = createSelector(contactPageFeatureSelector, (state: State) => state.form.form);
+const getSnackbarState = createSelector(
+  contactPageFeatureSelector,
+  (state: AppState) => state.root.snackbar
+);
 
-export const selectSnackbar = createSelector(contactPageFeatureSelector, (state: State) => state.form.snackbar);
+const getContactsState = createSelector(
+  contactPageFeatureSelector,
+  (state: AppState) => state.root.contacts
+);
 
-const buildContactPagePresentation = (
-  state: AppState
-): ContactpagePresentationModel => {
-  return {
+const selectContactPagePresentationModelform = createSelector(
+  getFormState,
+  getSnackbarState,
+  getContactsState,
+  (form, snackbar, contacts) : ContactpagePresentationModel => ({
     form: {
-      name: state.root.form.form.name,
-      linkedinUrl: state.root.form.form.linkedinUrl,
-      email: state.root.form.form.email,
+      name: form.name,
+      linkedinUrl: form.linkedinUrl,
+      email: form.email,
     },
     snackbar: {
-      message: state.root.form.snackbar.message,
-    }
-  };
-};
-
-const buildContacts = (state: AppState): ContactInterface[] => {
-  return state.root.contacts;
-};
+      message: snackbar.message,
+    },
+    contacts,
+  })
+);
 
 export const selectContactPagePresentationModel = createSelector({
-  contactPage: buildContactPagePresentation,
+  contactPage: selectContactPagePresentationModelform,
 });
 
-export const selectContactsFromAppState = createSelector({
-  contacts: buildContacts,
-});
+
+// const buildContactPagePresentation = (
+//   state: AppState
+// ): ContactpagePresentationModel => {
+//   return {
+//     form: {
+//       name: state.root.form.name,
+//       linkedinUrl: state.root.form.linkedinUrl,
+//       email: state.root.form.email,
+//     },
+//     snackbar: {
+//       message: state.root.snackbar.message,
+//     },
+//     contacts: state.root.contacts,
+//   };
+// };
+
+// const buildContacts = (state: AppState): ContactInterface[] => {
+//   return state.root.contacts;
+// };
+
+// export const selectContactPagePresentationModel = createSelector({
+//   contactPage: buildContactPagePresentation,
+// });
+
+// export const selectContactsFromAppState = createSelector({
+//   contacts: buildContacts,
+// });

@@ -6,16 +6,20 @@ import { EffectsModule } from '@ngrx/effects';
 import { FakeApiService } from './services/fakeapi.service';
 import { contactEmailChanged, contactLinkedInUrlChanged, contactNameChanged, submitForm, submitFormSuccess } from './store/actions';
 import { SubmitEffect } from './store/effects';
-import { AppState, appReducerBuilder } from './store/reducers';
+import { appReducerBuilder } from './store/reducers';
 import {
   selectContactPagePresentationModel,
-  selectContactsFromAppState,
 } from './store/selectors';
-import { ContactInterface, ContactpagePresentationModel, ContactpagePresentationModelForm, State } from './interfaces/interface';
+import { ContactInterface, ContactpagePresentationModel, ContactForm, State, AppState } from './interfaces/interface';
 
 const buildStore = (initialState: State) => {
   TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({ root: appReducerBuilder(initialState) }), EffectsModule.forRoot([SubmitEffect])],
+    imports: [
+      StoreModule.forRoot({ root: appReducerBuilder(initialState) }),
+      EffectsModule.forRoot([SubmitEffect]),
+      StoreModule.forFeature("contacts", { root: appReducerBuilder(initialState) }),
+      EffectsModule.forFeature([SubmitEffect]),
+    ],
     providers: [FakeApiService],
   });
 
@@ -59,15 +63,16 @@ describe('Contact Page Test', () => {
     store.dispatch(contactLinkedInUrlChanged({ linkedinUrl: 'linkedin.com/risto' }));
 
     store.select(selectContactPagePresentationModel).subscribe((result) => {
+      //console.log(result);
       presentationModel = result.contactPage;
     });
     expect(presentationModel!.form.linkedinUrl).toEqual('linkedin.com/risto');
   });
 
   it('should show a successful message when the contact Bruno is created', () => {
-    store = buildStore(formFilledState).store;
+    store = buildStore(initialState).store;
     let presentationModel: ContactpagePresentationModel;
-    store.dispatch(submitForm({form: formFilledState.form.form}));
+    store.dispatch(submitForm({form: formFilledState.form}));
 
     store.select(selectContactPagePresentationModel).subscribe((result) => {
       //console.log(result);
@@ -79,7 +84,7 @@ describe('Contact Page Test', () => {
   it('should show a new contact in the contact list when pressing submit', (done) => {
     const testbed = buildStore(formFilledState);
     store = testbed.store;
-    const form: ContactpagePresentationModelForm = {
+    const form: ContactForm = {
         name: "Bruno",
         linkedinUrl: "linkedin.com/bruno",
         email: "Bruno@ludotech.co",
@@ -88,8 +93,8 @@ describe('Contact Page Test', () => {
     store.dispatch(submitForm({ form: form }));
   
     let contact: ContactInterface[];
-    store.select(selectContactsFromAppState).subscribe((result) => {
-      contact = result.contacts;
+    store.select(selectContactPagePresentationModel).subscribe((result) => {
+      contact = result.contactPage.contacts
   
       if (contact.length >= 1) { //wait for the api call to finish
         expect(contact!).toEqual([{ id: "1", name: "Bruno", email: "Bruno@ludotech.co", linkedinUrl: "linkedin.com/bruno" }]);

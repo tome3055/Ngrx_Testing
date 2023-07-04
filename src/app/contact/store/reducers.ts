@@ -7,11 +7,7 @@ import {
   submitForm,
   submitFormSuccess,
 } from './actions';
-import { ContactpagePresentationModel, ContactpagePresentationModelForm, State } from '../interfaces/interface';
-
-export type AppState = {
-  root: State;
-};
+import { ContactForm, State, ContactInterface } from '../interfaces/interface';
 
 const reducers = [
   on(
@@ -20,12 +16,8 @@ const reducers = [
       ...state,
       form: {
         ...state.form,
-          form: {
-            ...state.form.form,
-            name: action.name,
-          }
+        name: action.name,
       },
-      
     })
   ),
   on(
@@ -34,12 +26,8 @@ const reducers = [
       ...state,
       form: {
         ...state.form,
-          form: {
-            ...state.form.form,
-            email: action.email,
-          }
+        email: action.email,
       },
-      
     })
   ),
   on(
@@ -48,50 +36,34 @@ const reducers = [
       ...state,
       form: {
         ...state.form,
-          form: {
-            ...state.form.form,
-            linkedinUrl: action.linkedinUrl,
-          }
+        linkedinUrl: action.linkedinUrl,
       },
-      
     })
   ),
   on(
     submitForm,
-    (state: State, action: {form: ContactpagePresentationModelForm}): State => ({
+    (state: State, action: {form: ContactForm}): State => ({
       ...state,
       isSubmitting: true,
-      form: {
-        ...state.form,
-        form: {
-          name: action.form.name,
-          email: action.form.email,
-          linkedinUrl: action.form.linkedinUrl,
-        },
-          snackbar: {
-            message: `Contact ${action.form.name} Submitted`,
-        }
-      },
-      
+      snackbar: {
+        message: `Contact ${action.form.name} Submitted`,
+      }
     })
   ),
   on(
     submitFormSuccess,
-    (state: State, action): State => ({
+    (state: State, action: {contacts: ContactInterface[]}): State => ({
       ...state,
       isSubmitting: false,
       form: {
-        ...state.form,
-        form: {
-          name: '',
-          email: '',
-          linkedinUrl: '',
-        },
-        snackbar: {
-          message: `Contact ${action.contacts[action.contacts.length - 1].name} Created`,
-        }
+        name: '',
+        linkedinUrl: '',
+        email: ''
       },
-      contacts: [...state.contacts, ...action.contacts]
+      contacts: [...action.contacts],
+      snackbar: {
+        message: `Contact ${action.contacts[action.contacts.length - 1].name} Created`,
+      }
       
     })
   ),

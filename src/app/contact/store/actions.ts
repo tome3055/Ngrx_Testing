@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { ActionTypes } from './actionTypes';
-import { ContactInterface, ContactpagePresentationModelForm } from '../interfaces/interface';
+import { ContactInterface, ContactForm } from '../interfaces/interface';
 
 export const contactNameChanged = createAction(
   ActionTypes.CONTACT_NAME_CHANGED,
@@ -20,7 +20,7 @@ export const contactLinkedInUrlChanged = createAction(
 export const submitForm = createAction(
   ActionTypes.CONTACT_SUBMITED,
   props<{
-    form: ContactpagePresentationModelForm;
+    form: ContactForm;
   }>());
 export const submitFormSuccess = createAction(
   ActionTypes.CONTACT_SUBMITED_SUCCESS,

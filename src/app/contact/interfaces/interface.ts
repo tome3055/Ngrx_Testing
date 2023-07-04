@@ -1,15 +1,16 @@
 
-export interface ContactpagePresentationModelForm {
+export interface ContactForm {
   name: string;
   linkedinUrl: string;
   email: string;
 }
 
 export interface ContactpagePresentationModel  {
-  form: ContactpagePresentationModelForm,
+  form: ContactForm;
   snackbar: {
     message: string;
-  }
+  },
+  contacts: ContactInterface[];
 };
 
 export interface ContactInterface {
@@ -20,8 +21,15 @@ export interface ContactInterface {
   }
 
 export interface State {
-  form: ContactpagePresentationModel;
+  form: ContactForm;
   errors: string;
   isSubmitting: boolean;
+  snackbar: {
+    message: string;
+  },
   contacts: ContactInterface[];
 }
+
+export interface AppState {
+  root: State;
+};

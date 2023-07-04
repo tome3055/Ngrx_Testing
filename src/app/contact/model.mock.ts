@@ -1,64 +1,48 @@
 import { ContactInterface, State } from "./interfaces/interface";
 
 export const initialState: State = {
-  form: {
-    form: {
-      name: '',
-      linkedinUrl: '',
-      email: '',
-    },
-    snackbar: {
-      message: ''
-    }
-  },
   errors: '',
   isSubmitting: false,
   contacts: [],
+  snackbar: {
+    message: ""
+  },
+  form: {
+    name: "",
+    linkedinUrl: "",
+    email: ""
+  }
 };
 
 export const initialStateaftersubmit: State = {
-  form: {
-    form : {      
-      name: '',
-      linkedinUrl: '',
-      email: '',
-    },
-    snackbar: {
-      message: ''
-    }
-  },
   errors: '',
   isSubmitting: true,
   contacts: [],
+  snackbar: {
+    message: ""
+  },
+  form: {
+    name: "",
+    linkedinUrl: "",
+    email: ""
+  }
 };
 
 export const formFilledState: State = {
-  form: {
-    form: {
-      name: 'Bruno',
-      linkedinUrl: 'linkedin.com/bruno',
-      email: 'Bruno@ludotech.co',
-    },
-    snackbar: {
-      message: ''
-    }
-  },
   errors: '',
   isSubmitting: false,
   contacts: [],
+  snackbar: {
+    message: ""
+  },
+  form: {
+    name: 'Bruno',
+    linkedinUrl: 'linkedin.com/bruno',
+    email: 'Bruno@ludotech.co',
+  }
 };
 
 export const oneContactState: State = {
-  form: {
-    form: {
-      name: 'Bruno',
-      linkedinUrl: 'linkedin.com/bruno',
-      email: 'Bruno@ludotech.co',
-    },
-    snackbar: {
-      message: ''
-    }
-  },
   errors: '',
   isSubmitting: false,
   contacts: [{
@@ -67,19 +51,17 @@ export const oneContactState: State = {
     linkedinUrl: 'linkedin.com/bruno',
     email: 'Bruno@ludotech.co',
   }],
+  snackbar: {
+    message: ""
+  },
+  form: {
+    name: "",
+    linkedinUrl: "",
+    email: ""
+  }
 };
 
 export const afterFormSubmitState: State = {
-  form: {
-    form: {
-      name: '',
-      linkedinUrl: '',
-      email: '',
-    },
-    snackbar: {
-      message: ''
-    }
-  },
   errors: '',
   isSubmitting: false,
   contacts: [
@@ -90,13 +72,12 @@ export const afterFormSubmitState: State = {
       linkedinUrl: 'linkedin.com/bruno',
     },
   ],
-};
-
-const returncontacts: ContactInterface[] = [
-  {
-    id: '123',
-    name: 'Bruno',
-    linkedinUrl: 'linkedin.com/bruno',
-    email: 'Bruno@ludotech.co',
+  snackbar: {
+    message: ""
   },
-];
+  form: {
+    name: "",
+    linkedinUrl: "",
+    email: ""
+  }
+};

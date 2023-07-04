@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { ContactInterface, ContactpagePresentationModelForm } from "../interfaces/interface";
+import { ContactInterface, ContactForm } from "../interfaces/interface";
 
 @Injectable()
 export class FakeApiService {
-  submitData(formData: ContactpagePresentationModelForm, success: boolean): Observable<ContactInterface[]> {
+  submitData(formData: ContactForm, success: boolean): Observable<ContactInterface[]> {
     return new Observable<ContactInterface[]>((observer) => {
       setTimeout(() => {
         if (success) {

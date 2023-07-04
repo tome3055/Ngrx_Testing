@@ -8,9 +8,10 @@ import { EffectsModule } from "@ngrx/effects";
 import { inject } from '@angular/core';
 
 import { SubmitEffect } from "./store/effects";
-import { AppReducer } from "./store/reducers";
+import { AppReducer, appReducerBuilder } from "./store/reducers";
 import { FakeApiService } from "./services/fakeapi.service";
 import { ContactComponent } from './components/contact/contact.component';
+import { initialState } from "./model.mock";
 
 const routes = [
     {
@@ -24,9 +25,11 @@ const routes = [
         CommonModule,
         RouterModule.forChild(routes),
         ReactiveFormsModule,
-        StoreModule.forFeature("contacts", AppReducer),
+        StoreModule.forFeature("contacts", { root: appReducerBuilder(initialState) }),
         HttpClientModule,
         EffectsModule.forFeature([SubmitEffect]),
+        //StoreModule.forRoot({ root: appReducerBuilder(initialState) }),
+        //EffectsModule.forRoot([SubmitEffect])
     ],
     declarations: [ContactComponent],
     providers: [FakeApiService]
